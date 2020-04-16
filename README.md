@@ -48,3 +48,20 @@ Lessons
 
 - `npm i`
   - install dependencies
+
+<br/>
+
+### Modify Application Structure
+
+= refactoring
+
+- modify the directory structure to follow MVC pattern
+
+  - create `server/`
+  - put `config/`, `routes/`, `views/` in them
+
+- modify basic behaviors, and start the application
+
+  - ```javascript
+    app.set("port", process.env.PORT || 3000);
+    ```
