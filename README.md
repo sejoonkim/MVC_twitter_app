@@ -65,3 +65,18 @@ Lessons
   - ```javascript
     app.set("port", process.env.PORT || 3000);
     ```
+
+<br/>
+
+### Modify views/ Directory with Partials
+
+- reusable componenets = partials
+
+- created partials
+
+  - header
+  - footer
+  - javascript
+  - stylesheet
+
+- apply partials to pages/
