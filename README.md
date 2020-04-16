@@ -80,3 +80,9 @@ Lessons
   - stylesheet
 
 - apply partials to pages/
+
+<br/>
+
+### Add Sign in, Sign up, Profile Templates
+
+- error flash messages are at the top of each body
