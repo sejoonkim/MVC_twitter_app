@@ -11,6 +11,7 @@ Lessons
 - Express template engine
 - User Authentication
 - Mongoose Schema & MongoDB
+- Modify to ES6 - [Translate ES6 to ES5 using Babel](https://www.freecodecamp.org/news/how-to-enable-es6-and-beyond-syntax-with-node-and-express-68d3e11fe1ab/)
 
 <br/>
 
