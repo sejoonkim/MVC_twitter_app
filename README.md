@@ -145,5 +145,14 @@ Lessons
 - why use process.nextTick()?
 
   - show that async authentication is possible.
-
   - querying a DB = async in nature
+
+<br/>
+
+### Create models/ & add user Schema
+
+<br/>
+
+### Protect Routes
+
+- create isLoggedIn() to check if use is authenticated

@@ -1,4 +1,6 @@
 import express from "express";
+import passport from "passport";
+import gravatar from "gravatar";
 const router = express.Router();
 
 /* GET home page. */
@@ -14,6 +16,16 @@ router.get("/login", (req, res, next) => {
   });
 });
 
+/* POST login page. */
+router.post(
+  "/login",
+  passport.authenticate("local-login", {
+    successRedirect: "/profile",
+    failureRedirect: "/login",
+    failureFlash: true,
+  })
+);
+
 /* GET signup page */
 router.get("/signup", (req, res, next) => {
   res.render("signup", {
@@ -22,8 +34,18 @@ router.get("/signup", (req, res, next) => {
   });
 });
 
+/* POST signup page. */
+router.post(
+  "/signup",
+  passport.authenticate("local-signup", {
+    successRedirect: "/profile",
+    failureRedirect: "/signup",
+    failureFlash: true,
+  })
+);
+
 /* GET profile page */
-router.get("/profile", (req, res, next) => {
+router.get("/profile", isLoggedIn, (req, res, next) => {
   res.render("profile", {
     title: "Profile Page",
     user: req.user,
@@ -34,4 +56,17 @@ router.get("/profile", (req, res, next) => {
     ),
   });
 });
+
+// check user logged in
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) return next();
+  res.redirect("/login");
+}
+
+/* GET logout page */
+router.get("/logout", (req, res) => {
+  req.logout();
+  res.redirect("/");
+});
+
 module.exports = router;
