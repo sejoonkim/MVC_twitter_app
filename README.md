@@ -156,3 +156,22 @@ Lessons
 ### Protect Routes
 
 - create isLoggedIn() to check if use is authenticated
+
+<br/>
+
+### Create controllers/
+
+- separate router and controller
+- create comments.js
+  - state three methods
+    - .list
+    - .create
+    - .hasAuthorization
+- create modal for comments
+
+  - `<form>`: set where to put
+
+- `data-toggle` & `data-target` = in bootstrap
+- ejs syntax
+  - inject JS with `<%`
+  - say the tag is equal to `<%=`

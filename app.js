@@ -12,6 +12,7 @@ import flash from "connect-flash";
 
 import routes from "./server/routes/index";
 import users from "./server/routes/users";
+import comments from "./server/controllers/comments";
 
 const app = express();
 const CookieStore = MongoStore(session);
@@ -68,6 +69,8 @@ app.use(flash());
 
 app.use("/", routes);
 app.use("/users", users);
+app.get("/comments", comments.hasAuthorization, comments.list);
+app.post("/comments", comments.hasAuthorization, comments.create);
 
 // catch 404 and forward to error handler
 // app.use(function (req, res, next) {
