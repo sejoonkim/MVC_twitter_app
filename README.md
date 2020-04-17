@@ -86,3 +86,25 @@ Lessons
 ### Add Sign in, Sign up, Profile Templates
 
 - error flash messages are at the top of each body
+
+<br/>
+
+### Install Additional Middlewares
+
+- `connect-flash`: outputs user friendly messages
+- `connect-mongo`: driver that connects with mongoDB
+- `mongoose`: mongoose ODM
+- `express-session`: save user sessions to DB
+- `gravatar`: show random user avatars
+- `bcrypt-nodejs`: encrypt password module
+- `passport`: authentication middleware
+- `passport-local`: local user/password authentication
+
+<br/>
+
+### Refactoring app.js with new Middlewares
+
+- app.js
+  - Database Configuration
+  - Passport
+  - save session to DB
