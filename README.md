@@ -108,3 +108,42 @@ Lessons
   - Database Configuration
   - Passport
   - save session to DB
+
+<br/>
+
+### Add config.js & passport.js
+
+- process.nextTick()
+
+  - To schedule a callback function to be invoked in the next iteration of the Event Loop
+
+  - > The difference between setTimeout() and process.nextTick() is that the process.nextTick() function is **specific to the Node.js Event Loop**. setTimeout() uses JavaScript runtime to schedule its own queue of events. When using process.nextTick(), callback function associated with it runs immediately after events in the Event Queue are processed by the Event Loop in a single iteration. In comparison to setTimeout(), it is faster since queue associated with setTimeout() or the JavaScript runtime.
+
+  - https://gist.github.com/mmalecki/1257394
+
+- syntax
+
+  - ```javascript
+    passport.use(
+      new LocalStrategy(function (username, password, done) {
+        User.findOne({ username: username }, function (err, user) {
+          if (err) {
+            return done(err);
+          }
+          if (!user) {
+            return done(null, false);
+          }
+          if (!user.verifyPassword(password)) {
+            return done(null, false);
+          }
+          return done(null, user);
+        });
+      })
+    );
+    ```
+
+- why use process.nextTick()?
+
+  - show that async authentication is possible.
+
+  - querying a DB = async in nature
