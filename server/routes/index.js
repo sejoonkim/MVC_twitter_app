@@ -1,6 +1,6 @@
-import express from "express";
-import passport from "passport";
-import gravatar from "gravatar";
+var express = require("express");
+var passport = require("passport");
+var gravatar = require("gravatar");
 const router = express.Router();
 
 /* GET home page. */

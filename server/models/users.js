@@ -1,8 +1,10 @@
-import mongoose from "mongoose";
-import bcrypt from "bcrypt";
+// Import Mongoose and password Encrypt
+var mongoose = require("mongoose");
+var bcrypt = require("bcrypt-nodejs");
 
-const userSchema = mongoose.Schema({
-  // local key for local strategy passport
+// define the schema for User model
+var userSchema = mongoose.Schema({
+  // Using local for Local Strategy Passport
   local: {
     name: String,
     email: String,
@@ -10,15 +12,15 @@ const userSchema = mongoose.Schema({
   },
 });
 
-// encrypt password
-userSchema.methods.generateHash = (password) => {
+// Encrypt Password
+userSchema.methods.generateHash = function (password) {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };
 
-// check validity of password
-userSchema.methods.validPassword = (password) => {
+// Verify if password is valid
+userSchema.methods.validPassword = function (password) {
   return bcrypt.compareSync(password, this.local.password);
 };
 
-// create user model and expose
+// create the model for users and expose it to our app
 module.exports = mongoose.model("User", userSchema);

@@ -1,10 +1,12 @@
+var express = require("express");
+var router = express.Router();
 // get gravatar icon from email
 var gravatar = require("gravatar");
 // get Comments model
 var Comments = require("../models/comments");
 
-// List Comments
-exports.list = function (req, res) {
+/* GET all comments. */
+router.get("/comments", hasAuthorization, function (req, res) {
   // List all comments and sort by Date
   Comments.find()
     .sort("-created")
@@ -26,9 +28,10 @@ exports.list = function (req, res) {
         ),
       });
     });
-};
-// Create Comments
-exports.create = function (req, res) {
+});
+
+/* Create comments */
+router.post("/comments", function (req, res) {
   // create a new instance of the Comments model with request body
   var comments = new Comments(req.body);
   // Set current user (id)
@@ -43,9 +46,22 @@ exports.create = function (req, res) {
     // Redirect to comments
     res.redirect("/comments");
   });
-};
-// Comments authorization middleware
-exports.hasAuthorization = function (req, res, next) {
+});
+
+/* Get comment by */
+router.get("/comments/:commentId", function (req, res, id) {
+  // Get Comment by id
+  Comments.findById(req.params.commentId, function (err, comment) {
+    if (err) res.send(err);
+    res.json(comment);
+  });
+});
+
+// Check authorization
+function hasAuthorization(req, res, next) {
   if (req.isAuthenticated()) return next();
   res.redirect("/login");
-};
+}
+
+// Exports all the routes to router variable
+module.exports = router;

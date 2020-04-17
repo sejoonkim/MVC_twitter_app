@@ -1,5 +1,7 @@
 ## Twitter style Web Application w/ MVC Design Pattern
 
+![alt](./gif/mvc_app.gif)
+
 Lessons
 
 - NodeJS and ExpressJS

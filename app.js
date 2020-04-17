@@ -1,101 +1,124 @@
-import createError from "http-errors";
-import express from "express";
-import path from "path";
-import cookieParser from "cookie-parser";
-import logger from "morgan";
-import sassMiddleware from "node-sass-middleware";
-import mongoose from "mongoose";
-import session from "express-session";
-import MongoStore from "connect-mongo";
-import passport from "passport";
-import flash from "connect-flash";
+var express = require("express");
+var path = require("path");
+var logger = require("morgan");
+var cookieParser = require("cookie-parser");
+var bodyParser = require("body-parser");
+// Import Routes
+var routes = require("./server/routes/index");
+var users = require("./server/routes/users");
+// Import comments controller
+var comments = require("./server/controllers/comments");
 
-import routes from "./server/routes/index";
-import users from "./server/routes/users";
-import comments from "./server/controllers/comments";
+// ODM With Mongoose
+var mongoose = require("mongoose");
+// Modules to store session
+var session = require("express-session");
+var MongoStore = require("connect-mongo")(session);
+// Import Passport and Warning flash modules
+var passport = require("passport");
+var flash = require("connect-flash");
 
-const app = express();
-const CookieStore = MongoStore(session);
+var app = express();
 
 // view engine setup
 app.set("views", path.join(__dirname, "server/views/pages"));
 app.set("view engine", "ejs");
 
-// Databse config
-import config from "./server/config/config";
-// Database connect
-mongoose.connect(config.url);
-// check if mongoDB is running
-mongoose.connection.on("error", () => {
+// Database configuration
+var config = require("./server/config/config.js");
+// connect to our database
+mongoose.connect(config.url, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+});
+// Check if MongoDB is running
+mongoose.connection.on("error", function () {
   console.error("MongoDB Connection Error. Make sure MongoDB is running.");
 });
-// passport
-import "./server/config/passport";
 
+// Passport configuration
+require("./server/config/passport")(passport);
+
+// uncomment after placing your favicon in /public
+//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger("dev"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
-  sassMiddleware({
+  require("node-sass-middleware")({
     src: path.join(__dirname, "public"),
     dest: path.join(__dirname, "public"),
-    indentedSyntax: true, // true = .sass and false = .scss
+    indentedSyntax: true,
     sourceMap: true,
   })
 );
+// Setup public directory
 app.use(express.static(path.join(__dirname, "public")));
 
-// for passport
-// private key for session
+// required for passport
+// secret for session
 app.use(
   session({
-    secret: "blasfijgojwefdsf",
+    secret: "sometextgohere",
     saveUninitialized: true,
     resave: true,
-    // save session to mongoDB using express-session and connect-mongo
-    store: new CookieStore({
+    //store session on MongoDB using express-session + connect mongo
+    store: new MongoStore({
       url: config.url,
       collection: "sessions",
     }),
   })
 );
-// initialize passport authentication
+
+// Init passport authentication
 app.use(passport.initialize());
-// permananet login session
+// persistent login sessions
 app.use(passport.session());
 // flash messages
 app.use(flash());
 
 app.use("/", routes);
 app.use("/users", users);
+// Setup routes for comments
 app.get("/comments", comments.hasAuthorization, comments.list);
 app.post("/comments", comments.hasAuthorization, comments.create);
 
+// error handlers
+
 // catch 404 and forward to error handler
-// app.use(function (req, res, next) {
-//   next(createError(404));
-// });
-app.use((req, res, next) => {
-  const err = new Error("Not Found");
+app.use(function (req, res, next) {
+  var err = new Error("Not Found");
   err.status = 404;
   next(err);
 });
 
-// error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+// development error handler
+// will print stacktrace
+if (app.get("env") === "development") {
+  app.use(function (err, req, res, next) {
+    res.status(err.status || 500);
+    res.render("error", {
+      message: err.message,
+      error: err,
+    });
+  });
+}
 
-  // render the error page
+// production error handler
+// no stacktraces leaked to user
+app.use(function (err, req, res, next) {
   res.status(err.status || 500);
-  res.render("error");
+  res.render("error", {
+    message: err.message,
+    error: {},
+  });
 });
 
 module.exports = app;
 
 app.set("port", process.env.PORT || 3000);
-const server = app.listen(app.get("port"), () => {
+
+var server = app.listen(app.get("port"), function () {
   console.log("Express server listening on port " + server.address().port);
 });
